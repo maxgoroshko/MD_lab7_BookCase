@@ -45,6 +45,7 @@ public class BookDetailsFragment extends Fragment {
     public void showBook(String name)
     {
         textView.setText(name);
+        textView.setTextSize(50);
     }
 
 
