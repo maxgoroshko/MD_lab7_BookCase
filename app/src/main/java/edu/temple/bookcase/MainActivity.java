@@ -32,16 +32,28 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         oneFragment = (findViewById(R.id.descFragment) == null);
 
         Fragment bookFragment = getSupportFragmentManager().findFragmentById(R.id.bookFragment);
-        if(bookFragment == null)
+        if(bookFragment == null && oneFragment)
         {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.bookFragment,BookListFragment.newInstance(books))
+                    .addToBackStack(null)
+                    .add(R.id.bookFragment, new ViewPagerFragment())
                     .commit();
         }
-        else if(bookFragment instanceof BookDetailsFragment) //MB
+        else if(bookFragment instanceof BookDetailsFragment && oneFragment) //MB
         {
-            getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.bookFragment, new ViewPagerFragment())
+                    .commit();
+        }
+        else
+        {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.bookFragment, BookListFragment.newInstance(books))
+                    .commit();
         }
 
     }
@@ -59,15 +71,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         bookDetailsFragment.setArguments(detailsBook);
 
-        if(oneFragment)
-        {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.bookFragment, bookDetailsFragment)
-                    .commit();
-        }
-        else
+        if(!oneFragment)
         {
             getSupportFragmentManager()
                     .beginTransaction()
