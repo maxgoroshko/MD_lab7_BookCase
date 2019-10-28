@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     ArrayList<String> books = new ArrayList<>();
     boolean oneFragment;
+    BookDetailsFragment bookDetailsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,33 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void onFragmentInteraction(int position) {
+
+        String bookName = books.get(position);
+
+        bookDetailsFragment = new BookDetailsFragment();
+
+        Bundle detailsBook = new Bundle();
+
+        detailsBook.putString(BookDetailsFragment.BOOK_TITLE,bookName);
+
+        bookDetailsFragment.setArguments(detailsBook);
+
+        if(oneFragment)
+        {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.bookFragment, bookDetailsFragment)
+                    .commit();
+        }
+        else
+        {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.descFragment,bookDetailsFragment)
+                    .commit();
+        }
 
     }
 }

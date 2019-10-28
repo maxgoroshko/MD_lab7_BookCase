@@ -7,21 +7,19 @@
 
     <FrameLayout
         android:id="@+id/bookFragment"
-        android:layout_width="430dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/descFragment"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/descFragment"
-        android:layout_width="300dp"
+        android:layout_width="430dp"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bookFragment"
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
