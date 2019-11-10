@@ -3,22 +3,39 @@ package edu.temple.bookcase;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 
 public class BookListFragment extends Fragment {
 
 
-    public static final String BOOK_NAME = "books";
-    ArrayList<String> books;
+    ListView listView;
+    Context c;
+    ArrayList<String> listBooks;
+    Book book;
+    JSONArray bookJSON;
 
 
     private OnFragmentInteractionListener fragmentParent;
@@ -28,10 +45,9 @@ public class BookListFragment extends Fragment {
     }
 
 
-    public static BookListFragment newInstance(ArrayList<String> books) {
+    public static BookListFragment newInstance(String param) {
         BookListFragment bookListFragment = new BookListFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(BOOK_NAME,books);
         bookListFragment.setArguments(args);
         return bookListFragment;
     }
@@ -39,31 +55,84 @@ public class BookListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            books = getArguments().getStringArrayList(BOOK_NAME);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ListView listView = (ListView) inflater.inflate(R.layout.fragment_book_list,container,false);
-        listView.setAdapter(new ArrayAdapter<>((Context) fragmentParent, android.R.layout.simple_list_item_1,books));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                fragmentParent.onFragmentInteraction(position);
+        View view = inflater.inflate(R.layout.fragment_book_list,container,false);
+        listView = view.findViewById(R.id.bookList);
+        listBooks = new ArrayList<>();
+        getBooks();
+        return view;
+    }
+
+
+
+
+    public void getBooks() {
+        new Thread() {
+            public void run() {
+                String karlUrl = "https://kamorris.com/lab/audlib/booksearch.php";
+                try {
+                    URL url = new URL(karlUrl);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+                    StringBuilder sBuilder = new StringBuilder();
+                    String tempStr;
+                    while ((tempStr = reader.readLine()) != null) {
+                        sBuilder.append(tempStr);
+                    }
+                    Message msg = Message.obtain();
+                    msg.obj = sBuilder.toString();
+                    urlHandler.sendMessage(msg);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        });
-        return listView;
+        }.start();
     }
 
+    Handler urlHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            try {
+                bookJSON = new JSONArray((String) msg.obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            for(int i = 0; i < bookJSON.length(); i++){
+                try {
+                    JSONObject jsonData = bookJSON.getJSONObject(i);
+                    String title = jsonData.getString("title");
+                    listBooks.add(title);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter(c, android.R.layout.simple_list_item_1, listBooks);
+            listView.setAdapter(arrayAdapter);
 
-    public void onButtonPressed(int position) {
-        if (fragmentParent != null) {
-            fragmentParent.onFragmentInteraction(position);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    try {
+                        book = new Book(bookJSON.getJSONObject(position));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //books = (Book) parent.getItemAtPosition(position);
+                    ((OnFragmentInteractionListener) c).onFragmentInteraction(book);
+                }
+            });
+            return false;
         }
-    }
+    });
+
+
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -74,6 +143,7 @@ public class BookListFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        this.c = context;
     }
 
     @Override
@@ -83,6 +153,6 @@ public class BookListFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(int position);
+        void onFragmentInteraction(Book objectBook);
     }
 }
