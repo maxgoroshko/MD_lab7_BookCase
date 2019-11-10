@@ -12,16 +12,30 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
 
 public class ViewPagerFragment extends Fragment {
 
     ViewPager viewPager;
-    PagerAdapter pagerAdapter;
+    BookDetailsPageraAdapter pagerAdapter;
+    BookDetailsFragment bookFragment;
+    Book book;
 
 
 
@@ -42,44 +56,48 @@ public class ViewPagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_view_pager,container,false);
+        pagerAdapter = new BookDetailsPageraAdapter(getFragmentManager());
         viewPager = v.findViewById(R.id.myPager);
-        pagerAdapter = new BookDetailsPageraAdapter(getChildFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
+
         return v;
     }
 
+    public void addPager(JSONArray bookArray){
+        for(int i = 0; i < bookArray.length(); i++){
+            try {
+                JSONObject pagerData = bookArray.getJSONObject(i);
+                book = new Book(pagerData);
+                bookFragment = BookDetailsFragment.newInstance(book);
+                pagerAdapter.add(bookFragment);
+                viewPager.setAdapter(pagerAdapter);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    private class BookDetailsPageraAdapter extends FragmentStatePagerAdapter
-    {
-        BookDetailsPageraAdapter(FragmentManager myFragment)
-        {
-            super(myFragment);
+
+    private class BookDetailsPageraAdapter extends FragmentStatePagerAdapter {
+
+        ArrayList<BookDetailsFragment> pagerFragments;
+
+        public BookDetailsPageraAdapter(FragmentManager fm) {
+            super(fm);
+            pagerFragments = new ArrayList<>();
         }
 
+        public void add(BookDetailsFragment fragment) {
+            pagerFragments.add(fragment);
+        }
 
         @Override
-        public Fragment getItem(int position) {
-            switch (position)
-            {
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                    return BookDetailsFragment.newInstance(getResources().getStringArray(R.array.books)[position]);
-                default:
-                    return null;
-            }
+        public Fragment getItem(int i) {
+            return pagerFragments.get(i);
         }
 
         @Override
         public int getCount() {
-            return getResources().getStringArray(R.array.books).length;
+            return pagerFragments.size();
         }
     }
 }

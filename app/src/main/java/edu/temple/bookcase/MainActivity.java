@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     boolean oneFragment;
     BookDetailsFragment bookDetailsFragment;
     ViewPagerFragment viewPagerFragment;
+    BookListFragment listFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +23,14 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         oneFragment = findViewById(R.id.descFragment) == null;
         bookDetailsFragment = new BookDetailsFragment();
-        BookListFragment listFragment = new BookListFragment();
+        listFragment = new BookListFragment();
         viewPagerFragment = new ViewPagerFragment();
 
         if (!oneFragment) {
             newFragment(listFragment, R.id.bookFragment);
             newFragment(bookDetailsFragment, R.id.descFragment);
         } else {
+            newFragment(listFragment, R.id.myPager);
             newFragment(viewPagerFragment, R.id.myPager);
         }
     }
@@ -46,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public void onFragmentInteraction(Book objectBook) {
 
         bookDetailsFragment.showBook(objectBook);
+    }
+    @Override
+    public void findBook(JSONArray bookArray)
+    {
+        bookDetailsFragment.findBook(bookArray);
     }
 
 }

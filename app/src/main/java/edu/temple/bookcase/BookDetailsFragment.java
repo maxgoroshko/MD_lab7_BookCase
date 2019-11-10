@@ -27,6 +27,7 @@ public class BookDetailsFragment extends Fragment {
     ImageView imageView;
     EditText editText;
     Button button;
+    Book pBook;
 
 
     public static final String BOOK_TITLE = "book title";
@@ -36,10 +37,10 @@ public class BookDetailsFragment extends Fragment {
     }
 
 
-    public static BookDetailsFragment newInstance(String bookTitle) {
+    public static BookDetailsFragment newInstance(Book bookTitle) {
         BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(BOOK_TITLE,bookTitle);
+        args.putParcelable(BOOK_TITLE,bookTitle);
         bookDetailsFragment.setArguments(args);
         return bookDetailsFragment;
     }
@@ -70,23 +71,18 @@ public class BookDetailsFragment extends Fragment {
     JSONObject jsonObject;
     Book books;
 
-    public void searchBook(final JSONArray bookArray){
+    public void findBook(final JSONArray bookArray){
         titleArray = new ArrayList<>(); authorArray = new ArrayList<>(); publishyrArray = new ArrayList<>();
 
         for(int i = 0; i < bookArray.length(); i++) {
-            try {
-                Log.d("Book Subset", bookArray.get(i).toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
             try {
                 jsonObject = bookArray.getJSONObject(i);
                 String title = jsonObject.getString("Title");
                 titleArray.add(title);
                 String author = jsonObject.getString("Author");
                 authorArray.add(author);
-                String publishyr = jsonObject.getString("Published");
-                publishyrArray.add(publishyr);
+                String publihser = jsonObject.getString("Published");
+                publishyrArray.add(publihser);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -99,6 +95,9 @@ public class BookDetailsFragment extends Fragment {
             public void onClick(View v) {
                 searchText = editText.getText().toString();
                 Log.d("Title", searchText);
+                if(searchText.equals(" ")){
+                    textView.setText("No books");
+                }
                 for (int i = 0; i < bookArray.length(); i++) {
                     try {
                         jsonObject = bookArray.getJSONObject(i);
@@ -131,14 +130,10 @@ public class BookDetailsFragment extends Fragment {
         imageView = view.findViewById(R.id.bImage);
         button = view.findViewById(R.id.button);
         editText = view.findViewById(R.id.searchBar);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String bSearch = editText.getText().toString();
-
-            }
-        });
+        if(getArguments() != null)
+        {
+            showBook(pBook);
+        }
         return view;
     }
 

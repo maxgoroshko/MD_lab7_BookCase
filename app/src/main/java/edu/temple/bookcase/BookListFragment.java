@@ -126,6 +126,7 @@ public class BookListFragment extends Fragment {
                     ((OnFragmentInteractionListener) c).onFragmentInteraction(book);
                 }
             });
+            ((OnFragmentInteractionListener) c).findBook(bookJSON);
             return false;
         }
     });
@@ -154,5 +155,6 @@ public class BookListFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Book objectBook);
+        void findBook(JSONArray bookArray);
     }
 }
