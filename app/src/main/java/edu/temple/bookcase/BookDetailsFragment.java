@@ -1,4 +1,5 @@
 package edu.temple.bookcase;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -26,7 +27,6 @@ public class BookDetailsFragment extends Fragment {
     String bookTitle, title, author, publisher;
     ImageView imageView;
     EditText editText;
-    Button button;
     Book pBook;
 
 
@@ -49,77 +49,21 @@ public class BookDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bookTitle = getArguments().getString(BOOK_TITLE);
+            pBook = getArguments().getParcelable(BOOK_TITLE);
         }
     }
 
 
     public void showBook(Book objectBook)
     {
-        author = objectBook.getAuthor();
+        //author = objectBook.getAuthor();
         title = objectBook.getTitle(); publisher = objectBook.getPublished();
-        textView.setText(" \"" + title + "\" "); textView.append(", " + author); textView.append(", " + objectBook);
-        textView.setTextSize(30);
+        textView.setText(" \"" + title + "\" "); textView.append(", " + author); textView.append(", " + publisher);
+        textView.setTextSize(20);
+        textView.setTextColor(Color.BLACK);
         String imageURL = objectBook.getCoverURL();
         Picasso.get().load(imageURL).into(imageView);
     }
-
-    ArrayList<String> titleArray;
-    ArrayList<String> authorArray;
-    ArrayList<String> publishyrArray;
-    String searchText;
-    JSONObject jsonObject;
-    Book books;
-
-    public void findBook(final JSONArray bookArray){
-        titleArray = new ArrayList<>(); authorArray = new ArrayList<>(); publishyrArray = new ArrayList<>();
-
-        for(int i = 0; i < bookArray.length(); i++) {
-            try {
-                jsonObject = bookArray.getJSONObject(i);
-                String title = jsonObject.getString("Title");
-                titleArray.add(title);
-                String author = jsonObject.getString("Author");
-                authorArray.add(author);
-                String publihser = jsonObject.getString("Published");
-                publishyrArray.add(publihser);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        button.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View v) {
-                searchText = editText.getText().toString();
-                Log.d("Title", searchText);
-                if(searchText.equals(" ")){
-                    textView.setText("No books");
-                }
-                for (int i = 0; i < bookArray.length(); i++) {
-                    try {
-                        jsonObject = bookArray.getJSONObject(i);
-                        books = new Book(jsonObject);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (searchText.equals(titleArray.get(i))) {
-                        showBook(books);
-                    } else if (searchText.equals(authorArray.get(i))) {
-                        showBook(books);
-                    } else if (searchText.equals(publishyrArray.get(i))) {
-                        showBook(books);
-                    }
-
-                }
-            }
-        });
-    }
-
-
-
 
 
     @Override
@@ -128,14 +72,11 @@ public class BookDetailsFragment extends Fragment {
 
         textView = view.findViewById(R.id.bTitle);
         imageView = view.findViewById(R.id.bImage);
-        button = view.findViewById(R.id.button);
-        editText = view.findViewById(R.id.searchBar);
         if(getArguments() != null)
         {
             showBook(pBook);
         }
         return view;
     }
-
 
 }

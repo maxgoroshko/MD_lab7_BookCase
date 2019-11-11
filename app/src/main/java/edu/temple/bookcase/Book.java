@@ -11,9 +11,9 @@ public class Book implements Parcelable {
     private String title, author, coverURL, published;
 
     public Book(JSONObject jsonBook) throws JSONException {
-        this.title = jsonBook.getString("Title"); this.author = jsonBook.getString("Author");
+        this.title = jsonBook.getString("title"); this.author = jsonBook.getString("author");
         this.coverURL = jsonBook.getString("cover_url");
-        this.id = jsonBook.getInt("book_id"); this.published = jsonBook.getString("Published");
+        this.id = jsonBook.getInt("book_id"); this.published = jsonBook.getString("published");
     }
 
     protected Book(Parcel in)

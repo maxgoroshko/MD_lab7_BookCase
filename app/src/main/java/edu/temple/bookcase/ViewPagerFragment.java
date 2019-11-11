@@ -36,6 +36,7 @@ public class ViewPagerFragment extends Fragment {
     BookDetailsPageraAdapter pagerAdapter;
     BookDetailsFragment bookFragment;
     Book book;
+    ArrayList<Book> books;
 
 
 
@@ -58,22 +59,22 @@ public class ViewPagerFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_view_pager,container,false);
         pagerAdapter = new BookDetailsPageraAdapter(getFragmentManager());
         viewPager = v.findViewById(R.id.myPager);
+        books = new ArrayList<>();
+        viewPager.setAdapter(pagerAdapter);
 
         return v;
     }
 
-    public void addPager(JSONArray bookArray){
-        for(int i = 0; i < bookArray.length(); i++){
-            try {
-                JSONObject pagerData = bookArray.getJSONObject(i);
-                book = new Book(pagerData);
-                bookFragment = BookDetailsFragment.newInstance(book);
-                pagerAdapter.add(bookFragment);
-                viewPager.setAdapter(pagerAdapter);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+    public void addPager(final ArrayList bookArray){
+        books.clear();
+        books.addAll(bookArray);
+        for(int i = 0; i < books.size(); i++) {
+            book = books.get(i);
+            bookFragment = BookDetailsFragment.newInstance(book);
+            pagerAdapter.add(bookFragment);
         }
+        pagerAdapter.getItemPosition(book);
+        pagerAdapter.notifyDataSetChanged();
     }
 
 
