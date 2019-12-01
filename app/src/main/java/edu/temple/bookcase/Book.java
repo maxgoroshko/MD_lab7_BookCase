@@ -7,13 +7,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Book implements Parcelable {
-    private int id;
+    private int id, duration;
     private String title, author, coverURL, published;
 
     public Book(JSONObject jsonBook) throws JSONException {
         this.title = jsonBook.getString("title"); this.author = jsonBook.getString("author");
         this.coverURL = jsonBook.getString("cover_url");
         this.id = jsonBook.getInt("book_id"); this.published = jsonBook.getString("published");
+        this.duration = jsonBook.getInt("duration");
     }
 //test
     protected Book(Parcel in)
@@ -77,6 +78,9 @@ public class Book implements Parcelable {
 
     public String getCoverURL() {
         return coverURL;
+    }
+    public int getDuration() {
+        return duration;
     }
 
 

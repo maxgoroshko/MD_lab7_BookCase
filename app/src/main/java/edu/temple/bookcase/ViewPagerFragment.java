@@ -37,6 +37,8 @@ public class ViewPagerFragment extends Fragment {
     BookDetailsFragment bookFragment;
     Book book;
     ArrayList<Book> books;
+    ArrayList<BookDetailsFragment> bookFragments;
+
 
 
 
@@ -59,24 +61,20 @@ public class ViewPagerFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_view_pager,container,false);
         pagerAdapter = new BookDetailsPageraAdapter(getFragmentManager());
         viewPager = v.findViewById(R.id.myPager);
+        books = new ArrayList<>();
+        bookFragments = new ArrayList<>();
+        viewPager.setAdapter(pagerAdapter);
 
         return v;
     }
 
-    public void addPager(JSONArray bookArray){
-        for(int i = 0; i < bookArray.length(); i++) {
-            try {
-                pagerAdapter.getItemPosition(i);
-                pagerAdapter.notifyDataSetChanged();
-                JSONObject pagerData = bookArray.getJSONObject(i);
-                book = new Book(pagerData);
-                bookFragment = BookDetailsFragment.newInstance(book);
-                pagerAdapter.add(bookFragment);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+    public void addPager(final ArrayList<Book> bookArray){
+        for(int i = 0; i < bookArray.size(); i++) {
+            book = bookArray.get(i);
+            bookFragment = BookDetailsFragment.newInstance(book);
+            bookFragments.add(bookFragment);
         }
-        viewPager.setAdapter(pagerAdapter);
+        pagerAdapter.addBooks(bookFragments);
     }
 
 
@@ -89,8 +87,19 @@ public class ViewPagerFragment extends Fragment {
             pagerFragments = new ArrayList<>();
         }
 
+        public void addBooks(ArrayList<BookDetailsFragment> books) {
+            pagerFragments.clear();
+            pagerFragments.addAll(books);
+            notifyDataSetChanged();
+        }
+
         public void add(BookDetailsFragment fragment) {
             pagerFragments.add(fragment);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
 
         @Override
