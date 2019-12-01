@@ -15,7 +15,7 @@ public class Book implements Parcelable {
         this.coverURL = jsonBook.getString("cover_url");
         this.id = jsonBook.getInt("book_id"); this.published = jsonBook.getString("published");
     }
-
+//test
     protected Book(Parcel in)
     {
         id = in.readInt();
