@@ -24,9 +24,8 @@ public class BookDetailsFragment extends Fragment {
 
 
     TextView textView;
-    String bookTitle, title, author, publisher;
+    String bookSelected, title, author, publisher;
     ImageView imageView;
-    EditText editText;
     Book pBook;
 
 
@@ -56,7 +55,7 @@ public class BookDetailsFragment extends Fragment {
 
     public void showBook(Book objectBook)
     {
-        //author = objectBook.getAuthor();
+        author = objectBook.getAuthor();
         title = objectBook.getTitle(); publisher = objectBook.getPublished();
         textView.setText(" \"" + title + "\" "); textView.append(", " + author); textView.append(", " + publisher);
         textView.setTextSize(20);

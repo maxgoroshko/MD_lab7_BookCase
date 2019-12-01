@@ -34,9 +34,8 @@ public class BookListFragment extends Fragment {
 
     ListView listView;
     Context c;
-    ArrayList<String> listBooks;
+    ArrayList<Book> listBooks;
     Book book;
-    JSONArray bookJSON;
     BookAdapter adapter;
 
     private OnFragmentInteractionListener fragmentParent;
@@ -71,21 +70,32 @@ public class BookListFragment extends Fragment {
 
 
 
-    public void getBooks(final ArrayList<Book> bookArray) {
-        adapter = new BookAdapter(c, bookArray);
+    public void getBooks(final JSONArray bookArray) {
+        listBooks.clear();
+        for(int i = 0; i < bookArray.length(); i++){
+            try {
+                listBooks.add(new Book(bookArray.getJSONObject(i)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.d("Book List", listBooks.toString());
+        updateList();
+    }
+
+    private void updateList(){
+        adapter = new BookAdapter(c, listBooks);
         adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                book = bookArray.get(position);
+                book = listBooks.get(position);
                 ((OnFragmentInteractionListener) c).onFragmentInteraction(book);
             }
         });
     }
-
-
 
 
     @Override

@@ -27,6 +27,17 @@ public class Book implements Parcelable {
     }
 
 
+    public static final Creator<Book> CREATOR = new Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
+        }
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
 
     public void setId(int id) {
         this.id = id;
