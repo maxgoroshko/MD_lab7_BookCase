@@ -28,6 +28,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import edu.temple.audiobookplayer.AudiobookService;
+
 
 public class BookListFragment extends Fragment {
 
@@ -39,6 +41,7 @@ public class BookListFragment extends Fragment {
     BookAdapter adapter;
 
     private OnFragmentInteractionListener fragmentParent;
+    AudiobookService.MediaControlBinder mediaControlBinder;
 
     public BookListFragment() {
         // Required empty public constructor
@@ -83,21 +86,6 @@ public class BookListFragment extends Fragment {
             }
         });
     }
-/*
-    private void updateList(){
-        adapter = new BookAdapter(c, listBooks);
-        adapter.notifyDataSetChanged();
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                book = listBooks.get(position);
-                ((OnFragmentInteractionListener) c).onFragmentInteraction(book);
-            }
-        });
-    }
-*/
 
     @Override
     public void onAttach(Context context) {

@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import edu.temple.audiobookplayer.AudiobookService;
 
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements BookListFragment.OnFragmentInteractionListener, BookDetailsFragment.BookDetailsInterface {
 
     boolean oneFragment;
     BookDetailsFragment bookDetailsFragment;
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         bookDetailsFragment = new BookDetailsFragment();
         listFragment = new BookListFragment();
         viewPagerFragment = new ViewPagerFragment();
+
         bindService(new Intent(this, AudiobookService.class), serviceConnection, BIND_AUTO_CREATE);
         if (!oneFragment) {
             newFragment(listFragment, R.id.bookFragment);
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             }
         });
 
-        final String savedSearch = sharedPreferences.getString("SEARCH", "Default Value");
+        savedSearch = sharedPreferences.getString("SEARCH", "");
         getBook(savedSearch);
     }
 
@@ -144,11 +145,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             return false;
         }
     });
-/*
-    @Override
-    public void bookSelected(Book bookObj) {
-        bookDetailsFragment.showBook(bookObj);
-    }
 
     @Override
     public void playBook(int id) {
@@ -189,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public void playBookFilePosition(File file, int position) {
         mediaControlBinder.play(file, position);
     }
-*/
+
 
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override

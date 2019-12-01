@@ -47,9 +47,9 @@ public class BookDetailsFragment extends Fragment {
     Book pBook;
     ImageButton playButton, stopButton, pauseButton; Button downloadButton, deleteButton;
     public static final String BOOK_TITLE = "book title";
-    SeekBar seekBar; TextView progressText; File file; boolean first, second;
+    SeekBar seekBar; TextView progressText; File file;
     SharedPreferences preferences;
-
+    SharedPreferences.Editor editor;
     public BookDetailsFragment() {
         // Required empty public constructor
     }
@@ -89,23 +89,18 @@ public class BookDetailsFragment extends Fragment {
 
         seekBar.setMax(objectBook.getDuration());
 
-        final SharedPreferences.Editor editor = preferences.edit();
-        final String savedBook = preferences.getString("SAVED_BOOK", "Deafult");
-        // if((bookObj.getTitle()).equals(savedBook)) {
-        //    currentTime = preferences.getInt("CURRENT_PROGRESS", 0);
-        //}
-        if(first == true){
-            currentTime = preferences.getInt("CURRENT_PROGRESS", 0);
-        } else{
-            currentTime = preferences.getInt("PROGRESS_2", 0);
-        }
-
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentTime = preferences.getInt("SAVED_PROGRESS" + objectBook.getId(), 0);
+                if(currentTime <= 10){
+                    currentTime = 0;
+                } else {
+                    currentTime = currentTime - 10;
+                }
                 Log.d("Current Time", String.valueOf(currentTime));
                 if(file != null){
-                    Toast.makeText(getActivity(), "Playing Audio Book File", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Playing Audio Book", Toast.LENGTH_SHORT).show();
                     //((BookDetailsInterface) c).playBookFile(file);
                     ((BookDetailsInterface) c).playBookFilePosition(file, currentTime);
                 }else {
@@ -120,32 +115,15 @@ public class BookDetailsFragment extends Fragment {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(first == true) {
-                    editor.putInt("CURRENT_PROGRESS", seekBar.getProgress());
-                    //editor.putString("SAVED_BOOK", bookObj.getTitle());
-                    first = false;
-                    second = true;
-                }
-                else {
-                    editor.putInt("PROGRESS_2", seekBar.getProgress());
-                    second = false;
-                    first = true;
-                }
+                editor.putInt("SAVED_PROGRESS" + objectBook.getId(), seekBar.getProgress());
                 editor.apply();
-                Log.d("First", String.valueOf(first));
                 ((BookDetailsInterface) c).pauseBook();
             }
         });
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(first == true) {
-                    editor.putInt("CURRENT_PROGRESS", 0);
-                }
-                else {
-                    editor.putInt("PROGRESS_2", 0);
-                }
-
+                editor.putInt("SAVED_PROGRESS" + objectBook.getId(), 0);
                 editor.apply();
                 seekBar.setProgress(0);
                 progressText.setText("0s");
@@ -155,9 +133,13 @@ public class BookDetailsFragment extends Fragment {
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Downloading...", Toast.LENGTH_LONG).show();
-                int bookId = objectBook.getId();
-                downloadBook(bookId);
+                if(file == null) {
+                    Toast.makeText(getActivity(), "Downloading", Toast.LENGTH_LONG).show();
+                    int bookId = objectBook.getId();
+                    downloadBook(bookId);
+                } else {
+                    Toast.makeText(getActivity(), "Already Downloaded", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +161,6 @@ public class BookDetailsFragment extends Fragment {
                     progressText.setText("" + progress + "s");
                     ((BookDetailsInterface) c).seekBook(progress);
                 }
-
             }
 
             @Override
@@ -227,7 +208,6 @@ public class BookDetailsFragment extends Fragment {
                     FileOutputStream fileOutputStream = new FileOutputStream(file);
                     fileOutputStream.write(byteArrayOutputStream.toByteArray());
 
-                    Log.d("File downloaded", file.toString());
 
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -254,7 +234,7 @@ public class BookDetailsFragment extends Fragment {
         seekBar = view.findViewById(R.id.seekBar);
         progressText = view.findViewById(R.id.progressText);
         preferences = this.getActivity().getPreferences(Context.MODE_PRIVATE);
-        first = true;
+        editor = preferences.edit();
 
 
         if(getArguments() != null)

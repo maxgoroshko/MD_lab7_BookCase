@@ -79,6 +79,9 @@ public class Book implements Parcelable {
     public String getCoverURL() {
         return coverURL;
     }
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
     public int getDuration() {
         return duration;
     }
