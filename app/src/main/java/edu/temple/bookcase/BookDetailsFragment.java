@@ -229,8 +229,8 @@ public class BookDetailsFragment extends Fragment {
         playButton = view.findViewById(R.id.playButton);
         stopButton = view.findViewById(R.id.stopButton);
         pauseButton = view.findViewById(R.id.pauseButton);
-        downloadButton = view.findViewById(R.id.downloadButton);
-        deleteButton = view.findViewById(R.id.deleteButton);
+        //downloadButton = view.findViewById(R.id.downloadButton);
+        //deleteButton = view.findViewById(R.id.deleteButton);
         seekBar = view.findViewById(R.id.seekBar);
         progressText = view.findViewById(R.id.progressText);
         preferences = this.getActivity().getPreferences(Context.MODE_PRIVATE);
