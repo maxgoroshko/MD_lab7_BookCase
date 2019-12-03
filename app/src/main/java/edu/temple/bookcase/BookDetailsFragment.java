@@ -130,6 +130,7 @@ public class BookDetailsFragment extends Fragment {
                 ((BookDetailsInterface) c).stopBook();
             }
         });
+        /*
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +154,7 @@ public class BookDetailsFragment extends Fragment {
                     Toast.makeText(getActivity(), "File does not exist", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
