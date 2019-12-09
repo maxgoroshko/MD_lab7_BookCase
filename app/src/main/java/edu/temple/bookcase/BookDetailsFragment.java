@@ -45,7 +45,7 @@ public class BookDetailsFragment extends Fragment {
     int currentTime;
     ImageView imageView;
     Book pBook;
-    ImageButton playButton, stopButton, pauseButton; Button downloadButton, deleteButton;
+    ImageButton playButton, stopButton, pauseButton;
     public static final String BOOK_TITLE = "book title";
     SeekBar seekBar; TextView progressText; File file;
     SharedPreferences preferences;
@@ -130,31 +130,7 @@ public class BookDetailsFragment extends Fragment {
                 ((BookDetailsInterface) c).stopBook();
             }
         });
-        /*
-        downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(file == null) {
-                    Toast.makeText(getActivity(), "Downloading", Toast.LENGTH_LONG).show();
-                    int bookId = objectBook.getId();
-                    downloadBook(bookId);
-                } else {
-                    Toast.makeText(getActivity(), "Already Downloaded", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(file != null) {
-                    file.delete();
-                    file = null;
-                    Toast.makeText(getActivity(), "File Deleted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "File does not exist", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -192,32 +168,7 @@ public class BookDetailsFragment extends Fragment {
         progressText.setText("" + currentTime + "s");
     }
 
-    public void downloadBook(final int search) {
-        new Thread() {
-            public void run() {
-                try {
-                    String urlString = "https://kamorris.com/lab/audlib/download.php?id=" + search;
-                    URL url = new URL(urlString);
-                    InputStream inputStream = url.openStream();
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[4096];
-                    int num;
-                    while((num = inputStream.read(buffer)) > 0){
-                        byteArrayOutputStream.write(buffer, 0, num);
-                    }
-                    file = new File(getActivity().getFilesDir(), String.valueOf(search));
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    fileOutputStream.write(byteArrayOutputStream.toByteArray());
 
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
 
 
 
