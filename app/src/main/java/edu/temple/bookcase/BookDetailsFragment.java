@@ -45,7 +45,7 @@ public class BookDetailsFragment extends Fragment {
     int currentTime;
     ImageView imageView;
     Book pBook;
-    ImageButton playButton, stopButton, pauseButton;
+    ImageButton playButton, stopButton, pauseButton; Button downloadButton, deleteButton;
     public static final String BOOK_TITLE = "book title";
     SeekBar seekBar; TextView progressText; File file;
     SharedPreferences preferences;
@@ -101,11 +101,11 @@ public class BookDetailsFragment extends Fragment {
                 Log.d("Current Time", String.valueOf(currentTime));
                 if(file != null){
                     Toast.makeText(getActivity(), "Playing Audio Book", Toast.LENGTH_SHORT).show();
-                    //((BookDetailsInterface) c).playBookFile(file);
+
                     ((BookDetailsInterface) c).playBookFilePosition(file, currentTime);
                 }else {
                     Toast.makeText(getActivity(), "Streaming Audio Book", Toast.LENGTH_SHORT).show();
-                    //((BookDetailsInterface) c).playBook(bookObj.getId());
+
                     ((BookDetailsInterface) c).playBookPosition(objectBook.getId(), currentTime);
                 }
                 ((BookDetailsInterface) c).setProgress(progressHandler);
@@ -170,8 +170,6 @@ public class BookDetailsFragment extends Fragment {
 
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_book_details,container,false);
@@ -181,8 +179,8 @@ public class BookDetailsFragment extends Fragment {
         playButton = view.findViewById(R.id.playButton);
         stopButton = view.findViewById(R.id.stopButton);
         pauseButton = view.findViewById(R.id.pauseButton);
-        //downloadButton = view.findViewById(R.id.downloadButton);
-        //deleteButton = view.findViewById(R.id.deleteButton);
+        downloadButton = view.findViewById(R.id.downloadButton);
+        deleteButton = view.findViewById(R.id.deleteButton);
         seekBar = view.findViewById(R.id.seekBar);
         progressText = view.findViewById(R.id.progressText);
         preferences = this.getActivity().getPreferences(Context.MODE_PRIVATE);
